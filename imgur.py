@@ -63,7 +63,7 @@ class imgur:
 
     return simplejson.loads(b.getvalue())
 
-  def gallery(self, sort="latest", view="all" count=20, page=1):
+  def gallery(self, sort="latest", view="all", count=20, page=1):
     values = [("sort", sort),
               ("view", view),
               ("count", count),
