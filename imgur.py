@@ -1,6 +1,7 @@
 #!/bin/env python
 
 __author__ = 'Devon Meunier <devon.meunier@myopicvoid.org>'
+__description__ = "A Pythonic interface to the imgur api."
 
 import simplejson
 import pycurl
@@ -70,6 +71,7 @@ class imgur:
     b = StringIO.StringIO()
     c.setopt(pycurl.URL, "http://imgur.com/api/gallery.json")
     c.setopt(pycurl.HTTP_POST, values)
+    c.setopt(pycurl.WRITEFUNCTION, b.write)
     c.perform()
     c.close()
 
