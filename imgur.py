@@ -7,18 +7,24 @@ import simplejson
 import pycurl
 import StringIO
 
+FILE = pycurl.FORM_FILE
+
 class imgurAPIError(Exception):
   pass
 
 class imgur:
   def __init__(self, apikey=None):
     self.apikey = apikey
-    self.FILE = pycurl.FORM_FILE
 
   def upload(self, image):
+    """
+    Upload an image to imgur.
+    'image' can be an URL, or in the form (imgur.FILE, "/path/to/file")
+    Returns the parsed json that imgur returns.
+    """
     if self.apikey is None:
       raise imgurAPIError, "API Key is missing."
-      return -1
+      return None 
     else:
       out = StringIO.StringIO()
       c = pycurl.Curl()
@@ -34,6 +40,12 @@ class imgur:
       return simplejson.loads(out.getvalue())
 
   def delete(self, dhash):
+    """
+    Delete an image from imgur.
+    dhash is the delete hash found in the object returned by a call to
+     imgur.upload
+    Returns the parsed json that imgur returns.
+    """
     c = pycurl.Curl()
     out = StringIO.StringIO()
     c.setopt(pycurl.URL, "http://imgur.com/api/delete/%s.json" % dhash)
@@ -45,6 +57,9 @@ class imgur:
     return simplejson.loads(out.getvalue())
 
   def istats(self, ihash):
+    """
+    Returns the image's stats corresponding to its hash, ihash.
+    """
     out = StringIO.StringIO()
     c = pycurl.Curl()
     c.setopt(pycurl.URL, "http://imgur.com/api/stats/%s.json" % ihash)
@@ -56,6 +71,9 @@ class imgur:
     return simplejson.loads(out.getvalue())
 
   def stats(self, view="all"):
+    """
+    Returns imgur statistics.
+    """
     out = StringIO.StringIO()
     c = pycurl.Curl()
     values = [("view", view)]
@@ -68,6 +86,10 @@ class imgur:
     return simplejson.loads(out.getvalue())
 
   def gallery(self, sort="latest", view="all", count=20, page=1):
+    """
+    Returns the stats of several images from the imgur database.
+    There is no way to specify which images are returned.
+    """
     out = StringIO.StringIO()
     values = [("sort", sort),
               ("view", view),
