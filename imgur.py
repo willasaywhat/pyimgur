@@ -13,6 +13,7 @@ class imgurAPIError(Exception):
 class imgur:
   def __init__(self, apikey=None):
     self.apikey = apikey
+    self.FILE = pycurl.FORM_FILE
 
   def upload(self, image):
     if self.apikey is None:
@@ -24,8 +25,8 @@ class imgur:
       values = [("key", self.apikey),
                 ("image", image)]
 
-      c.setopt(c.URL, "http://imgur.com/api/upload.json")
-      c.setopt(c.HTTPPOST, values)
+      c.setopt(pycurl.URL, "http://imgur.com/api/upload.json")
+      c.setopt(pycurl.HTTPPOST, values)
       c.setopt(pycurl.WRITEFUNCTION, b.write)
       c.perform()
       c.close()
@@ -37,6 +38,7 @@ class imgur:
     b = StringIO.StringIO()
     c.setopt(pycurl.URL, "http://imgur.com/api/delete/%s.json" % dhash)
     c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.WRITEFUNCTION, b.write)
     c.perform()
     c.close()
     
