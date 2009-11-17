@@ -20,61 +20,64 @@ class imgur:
       raise imgurAPIError, "API Key is missing."
       return -1
     else:
+      out = StringIO.StringIO()
       c = pycurl.Curl()
-      b = StringIO.StringIO()
       values = [("key", self.apikey),
-                ("image", image)]
-
+                ("image", image),
+               ]
       c.setopt(pycurl.URL, "http://imgur.com/api/upload.json")
       c.setopt(pycurl.HTTPPOST, values)
-      c.setopt(pycurl.WRITEFUNCTION, b.write)
+      c.setopt(pycurl.WRITEFUNCTION, out.write)
       c.perform()
       c.close()
 
-      return simplejson.loads(b.getvalue())
+      return simplejson.loads(out.getvalue())
 
   def delete(self, dhash):
     c = pycurl.Curl()
-    b = StringIO.StringIO()
+    out = StringIO.StringIO()
     c.setopt(pycurl.URL, "http://imgur.com/api/delete/%s.json" % dhash)
     c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
+    c.setopt(pycurl.WRITEFUNCTION, out.write)
     c.perform()
     c.close()
     
-    return simplejson.loads(b.getvalue())
+    return simplejson.loads(out.getvalue())
 
   def istats(self, ihash):
-    b = StringIO.StringIO()
+    out = StringIO.StringIO()
     c = pycurl.Curl()
     c.setopt(pycurl.URL, "http://imgur.com/api/stats/%s.json" % ihash)
     c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.WRITEFUNCTION, out.write)
     c.perform()
     c.close()
 
-    return simplejson.loads(b.getvalue())
+    return simplejson.loads(out.getvalue())
 
-  def stats(self, view = "all"):
+  def stats(self, view="all"):
+    out = StringIO.StringIO()
+    c = pycurl.Curl()
     values = [("view", view)]
-    b = StringIO.StringIO()
     c.setopt(pycurl.URL, "http://imgur.com/api/stats.json")
-    c.setopt(pycurl.HTTP_POST, values)
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
+    c.setopt(pycurl.HTTPPOST, values)
+    c.setopt(pycurl.WRITEFUNCTION, out.write)
     c.perform()
     c.close()
 
-    return simplejson.loads(b.getvalue())
+    return simplejson.loads(out.getvalue())
 
   def gallery(self, sort="latest", view="all", count=20, page=1):
+    out = StringIO.StringIO()
     values = [("sort", sort),
               ("view", view),
               ("count", count),
-              ("page", page)]
-    b = StringIO.StringIO()
+              ("page", page),
+             ]
     c.setopt(pycurl.URL, "http://imgur.com/api/gallery.json")
-    c.setopt(pycurl.HTTP_POST, values)
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
+    c.setopt(pycurl.HTTPPOST, values)
+    c.setopt(pycurl.WRITEFUNCTION, out.write)
     c.perform()
     c.close()
 
-    return simplejson.loads(b.getvalue())
+    return simplejson.loads(out.getvalue())
