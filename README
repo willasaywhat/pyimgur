@@ -1,4 +1,20 @@
 A Python Module for the imgur API.
 
-Author: Devon Meunier
+Author: Devon Meunier, forked by William C. Riggins III
 Homepage: http://myopicvoid.org
+
+
+Basic Usage:
+
+import imgur
+
+# Instantiate the class and set the API Key
+imgapi = imgur.imgur(apikey="yourimgurapikey")
+
+# Upload from the local disk
+imgurl = imgapi.upload("../../stuff.jpg")
+print imgurl
+
+# Upload from another URL
+imgurl = imgapi.upload_from_url("http://www.mywebsite.com/stuff.jpg")
+print imgurl

@@ -19,12 +19,35 @@ class imgur:
   def upload(self, image):
     """
     Upload an image to imgur.
-    'image' can be an URL, or in the form (imgur.FILE, "/path/to/file")
+    'image' Must be in the form (imgur.FILE, "/path/to/file")
     Returns the parsed json that imgur returns.
     """
     if self.apikey is None:
       raise imgurAPIError, "API Key is missing."
       return None 
+    else:
+      out = StringIO.StringIO()
+      c = pycurl.Curl()
+      values = [("key", self.apikey),
+                ("image", (c.FORM_FILE,image)),
+               ]
+      c.setopt(pycurl.URL, "http://imgur.com/api/upload.json")
+      c.setopt(pycurl.HTTPPOST, values)
+      c.setopt(pycurl.WRITEFUNCTION, out.write)
+      c.perform()
+      c.close()
+
+      return simplejson.loads(out.getvalue())
+
+  def upload_from_url(self, image):
+    """
+    Upload an image to imgur.
+    'image' must be a URL
+    Returns the parsed json that imgur returns.
+    """
+    if self.apikey is None:
+      raise imgurAPIError, "API Key is missing."
+      return None
     else:
       out = StringIO.StringIO()
       c = pycurl.Curl()
@@ -37,7 +60,7 @@ class imgur:
       c.perform()
       c.close()
 
-      return simplejson.loads(out.getvalue())
+      return simplejson.loads(out.getvalue())  
 
   def delete(self, dhash):
     """
